@@ -96,7 +96,7 @@ The predefined fields are as follows:
     - `mean` (required, *type: ['number', 'array']*): central value / mean; a single number for a single input name, or a list of numbers for a group of input names;
     - `std` (optional, *type: ['number', 'array']*): uncertainty / standard deviation; a single number for a single input name, or a list of numbers for a group of input names;
     - `corr` (optional, *type: array of array*): correlation matrix; must only be used if a group of input names is given and requires the presence of `std`.
-  - An object representing an arbitrary user-defined uni- or multi-variate probability distributions describing one or more input parameters. This object contains the following subfields:
+  - An object representing an arbitrary user-defined uni- or multi-variate probability distribution describing one or more input parameters. This object contains the following subfields:
     - `distribution_type` (required, *type: string*): a user-defined name identifying the probability distribution (e.g. `"uniform"`);
     - `distribution_parameters` (required, *type: object*): an object where each key is a user-defined name of a parameter of the probability distribution, and each value is a single number in the univariate case, or a list of numbers or lists in the multivariate case (e.g. `{"a":0, "b":1}` for a uniform distribution with boundaries $a$ and $b$).
     - `distribution_description` (required, *type: string*): Description of the custom distribution implemented, defining the fields in `distribution_parameters`.
