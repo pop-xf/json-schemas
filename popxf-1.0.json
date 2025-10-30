@@ -29,6 +29,8 @@
     }
   },
   "type": "object",
+  "title": "Specification of Fields in the `POPxf` JSON Format",
+  "description": "A detailed specification of all fields in the proposed `POPxf` data format is given below. Each subsection describes the structure, expected data type, and allowed values of the corresponding entries in the `JSON` object. The data type *object* mentioned below refers to a `JSON` object and corresponds to a set of key/value pairs representing named subfields. The format is divided into two main components: the `metadata` and `data` fields, introduced in Section 3. For simplicity, when referring to quantities defined in the previous sections, we will drop the $(n)$ superscript, since we are discussing the format of a given datafile, while keeping the $m\\in [1,M]$ subscript as an index for observables of length $M$. As a convention, we assume that all dimensionful quantities are given in units of GeV.",
   "properties": {
     "$schema": {
       "type": "string",
@@ -36,6 +38,7 @@
     },
     "metadata": {
       "type": "object",
+      "title": "`metadata` Field",
       "description": "The `metadata` field contains all contextual and structural information required to interpret the numerical predictions. It is a `JSON` object with the following subfields:",
       "properties": {
         "observable_names": {
@@ -185,7 +188,6 @@
                       },
                       "required": ["mean"],
                       "dependentRequired": {
-                        "std": ["mean"],
                         "corr": ["std"]
                       },
                       "additionalProperties": false
@@ -423,6 +425,7 @@
     },
     "data": {
       "type": "object",
+      "title": "`data` Field",
       "description": "The `data` field contains the numerical representation of the observable predictions. This information is provided in terms of central values and uncertainties of polynomial coefficients, which are associated either directly with observables or with named polynomials on which the observables depend.\n\nEach polynomial coefficient is labelled by a *monomial key*, written as a stringified tuple of model parameters (e.g., Wilson coefficients) defined in the `metadata` field `parameters`. For example, the key `\"('C1', 'C2')\":` corresponds to the monomial $C_1 C_2$. While the model parameters can be complex numbers, the polynomial coefficients are defined for the real and imaginary parts of the model parameters (see below) and are therefore strictly real. The format and conventions for monomial keys are as follows:\n- Each key is a string representation of a Python-style tuple: a comma-separated list of strings enclosed in parentheses.\n- The length of the tuple is determined by the polynomial order $k$, as defined by the  `metadata` field `polynomial_order` (default value: $k=2$, i.e. quadratic polynomial, if `polynomial_order` is omitted). The tuple length equals $k$, unless a real/imaginary tag is included (see below), in which case the length is $k+1$.\n- The first $k$ entries in the tuple are model parameter names, as defined in the `metadata` field `parameters`. These names must be sorted alphabetically to ensure unique monomial keys (assuming the same sorting rules as Python's `sort()` method which sorts alphabetically according to ASCII or UNICODE-value, where upper case comes before lower case, and shorter strings take precedence). Empty strings `''` are used to represent constant terms (equivalent to $1$) and to pad monomials of lower degree. For example, for a quadratic polynomial in real parameters (see below for how complex parameters are handled):\n  - A constant $1$ is written as `\"('','')\"`,\n  - A linear term $C_1$ is written as `\"('', 'C1')\"`,\n  - A quadratic term $C_1 C_2$ is written as `\"('C1', 'C2')\"`.\n- To handle complex parameters, the tuple may optionally include a real/imaginary tag as its final element. This tag consists of `R` (real) and `I` (imaginary) characters, and its length must match the polynomial order $k$. It indicates whether each parameter refers to its real or imaginary part. For example:\n  - `\"('', 'C1', 'RI')\"` corresponds to $\\mathrm{Im}(C_1)$;\n  - `\"('C1', 'C2', 'IR')\"` corresponds to $\\mathrm{Im}(C_1)\\,\\mathrm{Re}(C_2)$.\n- If the real/imaginary tag is omitted, the parameters are assumed to be real. For example:\n  - `\"('', 'C1')\"` corresponds to $\\mathrm{Re}(C_1)$;\n  - `\"('C1', 'C2')\"` corresponds to $\\mathrm{Re}(C_1)\\,\\mathrm{Re}(C_2)$.\n\nThese conventions ensure a canonical and unambiguous representation of polynomial terms while offering flexibility in the naming of model parameters. Missing monomials are implicitly treated as having zero coefficients.\n\n The `data` field is a `JSON` object with the following subfields:",
       "properties": {
         "observable_central": {
