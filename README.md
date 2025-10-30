@@ -136,7 +136,7 @@ The predefined fields are as follows:
       - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be a list of fixed scales or a string describing a dynamical scale choice like `dynamical:HT/2`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.
       - `renormalization_scheme`: details of the renormalization scheme used in the computation.
       - `covariant_derivative_sign`: sign convention used for the covariant derivative ("+" or "-").
-      - `gamma5_scheme`: scheme used for $\gamma_5$ in dimensional regularization ("BMHV","KKS", ...).
+      - `gamma5_scheme`: scheme used for $\gamma_5$ in dimensional regularization ("BMHV", "KKS", ...).
       - `evanescent`: details of the treatment of evanescent operators, e.g. a reference to the scheme used.
       - `approximations`: Any relevant approximations used, such as the use of the first leading-logarithmic approximation for RG evolution.
       - any other relevant settings specific to the tool or calculation.
