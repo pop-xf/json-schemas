@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import argparse
 import json, textwrap, re
 from typing import Any
+from pathlib import Path
 
 SCHEMA_PATH = "popxf-1.0.json"
 OUTPUT_MD = "README.md"
@@ -139,7 +141,7 @@ def _render_schema_bullets(spec, name=None, indent=""):
                 child_req  = "required" if child in req else "optional"
                 child_type = get_type_string(child_spec) or "any"
                 desc = (child_spec.get("description") or "").strip()
-                header = f"{indent}- `{child}` ({child_req}, *type: {child_type}*)"
+                header = f"{indent}- **`{child}` ({child_req}, *type: {child_type}*)**"
                 if desc:
                     header += f": {desc}"
                 lines.append(header)
@@ -147,11 +149,11 @@ def _render_schema_bullets(spec, name=None, indent=""):
                 # recurse into child
                 lines.extend(_render_schema_bullets(child_spec, name=None, indent=indent + "  "))
 
-                # show child examples (if you added this earlier)
+                # show child examples
                 child_examples = child_spec.get("examples")
                 if child_examples:
                     lines.append("")
-                    lines.append("  **Example:**" if len(child_examples) == 1 else "  **Examples:**")
+                    lines.append("  Example:" if len(child_examples) == 1 else "  Examples:")
                     pretty = format_examples_for_markdown(child_examples)
                     indented = "\n".join("  " + ln if ln else "" for ln in pretty.splitlines())
                     lines.append(indented)
@@ -159,8 +161,6 @@ def _render_schema_bullets(spec, name=None, indent=""):
         # map-like additionalProperties (incl. anyOf)
         if "additionalProperties" in spec:
             ap = spec["additionalProperties"]
-            # if ap is False:
-            #     lines.append(f"{indent}- **Any other key:** forbidden")
             if isinstance(ap, dict) and ("anyOf" in ap or "oneOf" in ap):
                 alts = ap.get("anyOf") or ap.get("oneOf") or []
                 for alt in alts:
@@ -169,9 +169,6 @@ def _render_schema_bullets(spec, name=None, indent=""):
                     if alt_desc:
                         lines.append(f"{indent}- {alt_desc or f'Value of type *{alt_type}*'}")
                         lines.extend(_render_schema_bullets(alt, name=None, indent=indent + "  "))
-            # else:
-            #     lines.append(f"{indent}- **Any key:** value of type *{get_type_string(ap) or 'any'}*")
-            #     lines.extend(_render_schema_bullets(ap, name=None, indent=indent + "  "))
         return lines
 
     # --- If we reach here and there ARE combinators, expand them now (fallback)
@@ -219,7 +216,7 @@ def emit_section(md_lines, prop_name, spec, is_required):
 
     # Examples for the field itself
     if examples:
-        md_lines.append("**Example:**" if len(examples) == 1 else "**Examples:**")
+        md_lines.append("Example:" if len(examples) == 1 else "Examples:")
         md_lines.append("")
         md_lines.append(format_examples_for_markdown(examples))
         md_lines.append("")
@@ -231,6 +228,7 @@ def walk_properties(md_lines, schema_section):
     """
     md_lines.append(f"## {schema_section.get('title', '').strip()}")
     md_lines.append(schema_section.get("description", "").strip())
+    md_lines.append("")  # spacer
 
     props_obj = schema_section.get("properties", {})
     required_fields = set(schema_section.get("required", []))
@@ -239,29 +237,56 @@ def walk_properties(md_lines, schema_section):
         is_required = name in required_fields
         emit_section(md_lines, name, spec, is_required)
 
-def main():
-    with open(SCHEMA_PATH, "r") as f:
-        schema = json.load(f)
-
+def write_markdown(schema, out_path):
     md_lines = []
-
-    # Intro
     md_lines.append(f"# {schema.get('title', '').strip()}")
     md_lines.append(schema.get("description", "").strip())
+    md_lines.append("")  # spacer
 
-    # --- metadata section
     metadata_section = schema["properties"]["metadata"]
     walk_properties(md_lines, metadata_section)
 
-    # --- data section (optional, if you also want to dump these)
     data_section = schema["properties"]["data"]
     walk_properties(md_lines, data_section)
 
-    # write file
-    with open(OUTPUT_MD, "w") as f:
-        f.write("\n".join(md_lines))
+    Path(out_path).write_text("\n".join(md_lines), encoding="utf-8")
+    print(f"Wrote {out_path}")
 
-    print(f"Wrote {OUTPUT_MD}")
+def to_latex_with_pypandoc(md_path, tex_path):
+    try:
+        import pypandoc
+    except ImportError:
+        raise SystemExit("pypandoc not installed. `pip install pypandoc pandoc-minted`")
+
+    # Markdown → LaTeX (minted)
+    tex = pypandoc.convert_file(
+        md_path, to="latex",
+        extra_args=[
+            "--filter=pandoc-minted",
+            "--natbib",
+        ]
+    )
+    # Turn \citep and \citet into plain \cite
+    tex = re.sub(r'\s*\\cite[p|t]?', r'~\\cite', tex)
+    with open(tex_path, 'w') as f:
+        f.write(tex)
+    print(f"Wrote {tex_path}")
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--schema", default=SCHEMA_PATH)
+    parser.add_argument("--md", default=OUTPUT_MD)
+    parser.add_argument("--tex", help="Write LaTeX fragment to this path (uses pypandoc).")
+    args = parser.parse_args()
+
+    with open(args.schema, "r", encoding="utf-8") as f:
+        schema = json.load(f)
+
+    write_markdown(schema, args.md)
+
+    if args.tex:
+        tex_path = args.tex or Path(args.md).with_suffix(".tex")
+        to_latex_with_pypandoc(args.md, str(tex_path))
 
 if __name__ == "__main__":
     main()
