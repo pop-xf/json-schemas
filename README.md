@@ -1,12 +1,14 @@
 # Specification of Fields in the `POPxf` JSON Format
 A detailed specification of all fields in the proposed `POPxf` data format is given below. Each subsection describes the structure, expected data type, and allowed values of the corresponding entries in the `JSON` object. The data type *object* mentioned below refers to a `JSON` object and corresponds to a set of key/value pairs representing named subfields. The format is divided into two main components: the `metadata` and `data` fields, introduced in Section 3. For simplicity, when referring to quantities defined in the previous sections, we will drop the $(n)$ superscript, since we are discussing the format of a given datafile, while keeping the $m\in [1,M]$ subscript as an index for observables of length $M$. As a convention, we assume that all dimensionful quantities are given in units of GeV.
+
 ## `metadata` Field
 The `metadata` field contains all contextual and structural information required to interpret the numerical predictions. It is a `JSON` object with the following subfields:
+
 ### `observable_names` (required, *type: array of string*)
 
 List of $M$ names identifying each observable. Must be a list of unique, non-empty strings, with at least one entry.
 
-**Example:**
+Example:
 
 ```json
   "observable_names": ["observable1", "observable2", "observable3"]
@@ -16,13 +18,13 @@ List of $M$ names identifying each observable. Must be a list of unique, non-emp
 
 Defines the parameter basis (e.g. an operator basis in an EFT). At least one of the two subfields `wcxf` and `custom` has to be present. If both subfields are present, any element of `parameters` (see below) not belonging to the `wcxf` basis is interpreted as belonging to the `custom` basis. The subfields are defined as follows:
 
-- `wcxf` (optional, *type: object*): Specifies an EFT basis defined by the Wilson Coefficient exchange format (WCxf) [@Aebischer:2017ugx]. This object contains the following fields:
-  - `eft` (required, *type: string*): EFT name defined by WCxf (e.g., `"SMEFT"`)
-  - `basis` (required, *type: string*): Operator basis name defined by WCxf (e.g., `"Warsaw"`)
-  - `sectors` (optional, *type: array of string*): List of renormalisation-group-closed sectors of Wilson coefficients containing the Wilson coefficients given in `parameters` (see below). The available sectors for each EFT are defined by WCxf.
-- `custom` (optional, *type: any*): Field of any type and substructure to unambiguously specify any parameter basis not defined by WCxf.
+- **`wcxf` (optional, *type: object*)**: Specifies an EFT basis defined by the Wilson Coefficient exchange format (WCxf) [@Aebischer:2017ugx]. This object contains the following fields:
+  - **`eft` (required, *type: string*)**: EFT name defined by WCxf (e.g., `"SMEFT"`)
+  - **`basis` (required, *type: string*)**: Operator basis name defined by WCxf (e.g., `"Warsaw"`)
+  - **`sectors` (optional, *type: array of string*)**: List of renormalisation-group-closed sectors of Wilson coefficients containing the Wilson coefficients given in `parameters` (see below). The available sectors for each EFT are defined by WCxf.
+- **`custom` (optional, *type: any*)**: Field of any type and substructure to unambiguously specify any parameter basis not defined by WCxf.
 
-**Example:**
+Example:
 
 ```json
   "basis": {
@@ -38,7 +40,7 @@ Defines the parameter basis (e.g. an operator basis in an EFT). At least one of 
 
 List of model parameters (e.g., Wilson coefficient names) used in the polynomial expansion. Must be a list of unique, non-empty strings, with at least one entry.
 
-**Example:**
+Example:
 
 ```json
   "parameters": ["C1", "C2", "C3"]
@@ -56,7 +58,7 @@ The renormalisation scale in GeV at which the parameter vector $\vec{C}$ is defi
 
 For a given observable, the observable coefficients $\vec{o}_m \supset \vec{b}_m, \vec{c}_m, \dots$ depend on the scale at which the parameters are defined, such that the observable itself is scale independent up to higher-order corrections in perturbation theory.
 
-**Examples:**
+Examples:
 
 ```json
   "scale": 91.1876
@@ -70,7 +72,7 @@ For a given observable, the observable coefficients $\vec{o}_m \supset \vec{b}_m
 
 Collects relevant data that may be required by a third party to reproduce the prediction. Each element of the list should be an object that corresponds to a step in the workflow and has three predefined fields: `description`, `tool` and `inputs`, specified below. In addition, any additional fields containing data deemed useful in this context can be included.
 
-**Schematic example:**
+Schematic example:
 
 ```json
   "reproducibility": [
@@ -89,19 +91,19 @@ Collects relevant data that may be required by a third party to reproduce the pr
 ```
 The predefined fields are as follows:
 
-- `description` (optional, *type: string*): Free-form text description of the method and tool used in this step of obtaining the predictions.
-- `inputs` (optional, *type: object*): Specifies the numerical values of input parameters used by the tool in producing the numerical values of the polynomial coefficients. Each entry maps an input name (a string) or a group of names (as a stringified tuple, e.g.`"('m1','m2')"`) to one of the following:
+- **`description` (optional, *type: string*)**: Free-form text description of the method and tool used in this step of obtaining the predictions.
+- **`inputs` (optional, *type: object*)**: Specifies the numerical values of input parameters used by the tool in producing the numerical values of the polynomial coefficients. Each entry maps an input name (a string) or a group of names (as a stringified tuple, e.g.`"('m1','m2')"`) to one of the following:
   - A single number: interpreted as the central value of a single, uncorrelated input parameter without uncertainty;
   - An object representing a uni- or multi-variate normal distribution describing one or more possibly correlated input parameters with uncertainties. This object can contain the subfields `mean`, `std`, and `corr`. If the key of the object is a stringified tuple of $N$ input names (e.g., `"('m1','m2')"` with $N = 2$), describing a group of $N$ possibly correlated input parameters, then `mean` and (if present) `std` must be lists of length $N$, and (if present) `corr` must be an $N \times N$ matrix, expressed as a list of $N$ lists of $N$ numbers. The subfields are defined as follows:
-    - `mean` (required, *type: ['number', 'array']*): central value / mean; a single number for a single input name, or a list of numbers for a group of input names;
-    - `std` (optional, *type: ['number', 'array']*): uncertainty / standard deviation; a single number for a single input name, or a list of numbers for a group of input names;
-    - `corr` (optional, *type: array of array*): correlation matrix; must only be used if a group of input names is given and requires the presence of `std`.
+    - **`mean` (required, *type: ['number', 'array']*)**: central value / mean; a single number for a single input name, or a list of numbers for a group of input names;
+    - **`std` (optional, *type: ['number', 'array']*)**: uncertainty / standard deviation; a single number for a single input name, or a list of numbers for a group of input names;
+    - **`corr` (optional, *type: array of array*)**: correlation matrix; must only be used if a group of input names is given and requires the presence of `std`.
   - An object representing an arbitrary user-defined uni- or multi-variate probability distribution describing one or more input parameters. This object contains the following subfields:
-    - `distribution_type` (required, *type: string*): a user-defined name identifying the probability distribution (e.g. `"uniform"`);
-    - `distribution_parameters` (required, *type: object*): an object where each key is a user-defined name of a parameter of the probability distribution, and each value is a single number in the univariate case, or a list of numbers or lists in the multivariate case (e.g. `{"a":0, "b":1}` for a uniform distribution with boundaries $a$ and $b$).
-    - `distribution_description` (required, *type: string*): Description of the custom distribution implemented, defining the fields in `distribution_parameters`.
+    - **`distribution_type` (required, *type: string*)**: a user-defined name identifying the probability distribution (e.g. `"uniform"`);
+    - **`distribution_parameters` (required, *type: object*)**: an object where each key is a user-defined name of a parameter of the probability distribution, and each value is a single number in the univariate case, or a list of numbers or lists in the multivariate case (e.g. `{"a":0, "b":1}` for a uniform distribution with boundaries $a$ and $b$).
+    - **`distribution_description` (required, *type: string*)**: Description of the custom distribution implemented, defining the fields in `distribution_parameters`.
 
-  **Example:**
+  Example:
 
   In the example below, `"m1"` is an input parameter with no associated uncertainty, `"m2"` and `"m3"` are a pair of input parameters with correlated, Gaussian uncertainties, and `"m4"` is a parameter that is uniformly distributed between 0 and 1.
 
@@ -126,10 +128,10 @@ The predefined fields are as follows:
       }
     }
   ```
-- `tool` (optional, *type: object*): Provides free-form information about the tool, software or technique used in a particular step of the workflow. The predefined subfields are `name`, `version`, and `settings`. Any number of additional fields may be included to record or link to supplementary metadata, such as model information/configuration, perturbative order, scale choice, PDF sets, simulation settings, input parameter cards, etc. The predefined subfields are as follows:
-  - `name` (required, *type: string*): name of tool, e.g. `"MadGraph5_aMC@NLO"`, `"POWHEG"`,  `"SHERPA"`, `"WHIZARD"`, `"flavio"`, `"FeynCalc"`, `"analytical calculation"`, ...
-  - `version` (optional, *type: string*): version of the tool, e.g. "1.2"
-  - `settings` (optional, *type: object*): object containing information about the tool settings with free-form substructure. For example:
+- **`tool` (optional, *type: object*)**: Provides free-form information about the tool, software or technique used in a particular step of the workflow. The predefined subfields are `name`, `version`, and `settings`. Any number of additional fields may be included to record or link to supplementary metadata, such as model information/configuration, perturbative order, scale choice, PDF sets, simulation settings, input parameter cards, etc. The predefined subfields are as follows:
+  - **`name` (required, *type: string*)**: name of tool, e.g. `"MadGraph5_aMC@NLO"`, `"POWHEG"`,  `"SHERPA"`, `"WHIZARD"`, `"flavio"`, `"FeynCalc"`, `"analytical calculation"`, ...
+  - **`version` (optional, *type: string*)**: version of the tool, e.g. `"1.2"`
+  - **`settings` (optional, *type: object*)**: object containing information about the tool settings with free-form substructure. For example:
       - `perturbative_order` (e.g. `LO`, `NLO`, `NLOQCD`, ...)
       - `PDF`: name, version, and set of the PDF used.
       - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.
@@ -141,7 +143,7 @@ The predefined fields are as follows:
       - `approximations`: Any relevant approximations used, such as the use of the first leading-logarithmic approximation for RG evolution.
       - any other relevant settings specific to the tool or calculation.
 
-  **Examples:**
+  Examples:
   ```json
     "tool": {
       "name": "EFTTool",
@@ -197,7 +199,7 @@ The predefined fields are as follows:
 
 List of names identifying the individual polynomials used in function-of-polynomials mode. Must contain unique, non-empty strings.
 
-**Example:**
+Example:
 
 ```json
   "polynomial_names": ["polynomial 1", "polynomial 2"]
@@ -207,10 +209,10 @@ List of names identifying the individual polynomials used in function-of-polynom
 
 Defines how each observable is constructed from the named polynomials. Must be a list of $M$ objects, one per observable. The length and order of the list must match those of the `observable_names` field. Each object must contain:
 
-- `variables` (required, *type: object*): An object where each key is a string that is a Python-compatible variable name (used as variable in the `expression` field described below), and each value is a string identifying a polynomial name from `polynomial_names`. For example, `{"num": "polynomial 1", "den": "polynomial 2"}`.
-- `expression` (required, *type: string*): A Python-compatible mathematical expression using the dummy variable names defined in `variables`, e.g. `"num/den"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used.
+- **`variables` (required, *type: object*)**: An object where each key is a string that is a Python-compatible variable name (used as variable in the `expression` field described below), and each value is a string identifying a polynomial name from `polynomial_names`. For example, `{"num": "polynomial 1", "den": "polynomial 2"}`.
+- **`expression` (required, *type: string*)**: A Python-compatible mathematical expression using the dummy variable names defined in `variables`, e.g. `"num/den"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used.
 
-**Example:**
+Example:
 
 ```json
   "observable_expressions": [
@@ -241,7 +243,7 @@ Defines how each observable is constructed from the named polynomials. Must be a
 
 Specifies the maximum degree of polynomial terms included in the expansion. If omitted, the default value is 2 (i.e., quadratic polynomial). Values higher than 2 may be used to represent observables involving higher-order terms in the model parameters. The current implementation of the `JSON` schema defining the data format supports values up to 5. Higher orders are not prohibited in principle but are currently unsupported to avoid excessively large data structures.
 
-**Example:**
+Example:
 
 ```json
   "polynomial_order": 2
@@ -251,7 +253,7 @@ Specifies the maximum degree of polynomial terms included in the expansion. If o
 
 Optional free-form metadata for documentation purposes. May include fields such as authorship, contact information, date, description of the observable, information identifying the associated correlation file (e.g. hash value or filename), or external references. The format is unrestricted, allowing any `JSON`-encodable content.
 
-**Example:**
+Example:
 
 ```json
   "misc": {
@@ -268,6 +270,7 @@ Optional free-form metadata for documentation purposes. May include fields such 
 The `data` field contains the numerical representation of the observable predictions. This information is provided in terms of central values and uncertainties of polynomial coefficients, which are associated either directly with observables or with named polynomials on which the observables depend.
 
 Each polynomial coefficient is labelled by a *monomial key*, written as a stringified tuple of model parameters (e.g., Wilson coefficients) defined in the `metadata` field `parameters`. For example, the key `"('C1', 'C2')":` corresponds to the monomial $C_1 C_2$. While the model parameters can be complex numbers, the polynomial coefficients are defined for the real and imaginary parts of the model parameters (see below) and are therefore strictly real. The format and conventions for monomial keys are as follows:
+
 - Each key is a string representation of a Python-style tuple: a comma-separated list of strings enclosed in parentheses.
 - The length of the tuple is determined by the polynomial order $k$, as defined by the  `metadata` field `polynomial_order` (default value: $k=2$, i.e. quadratic polynomial, if `polynomial_order` is omitted). The tuple length equals $k$, unless a real/imaginary tag is included (see below), in which case the length is $k+1$.
 - The first $k$ entries in the tuple are model parameter names, as defined in the `metadata` field `parameters`. These names must be sorted alphabetically to ensure unique monomial keys (assuming the same sorting rules as Python's `sort()` method which sorts alphabetically according to ASCII or UNICODE-value, where upper case comes before lower case, and shorter strings take precedence). Empty strings `''` are used to represent constant terms (equivalent to $1$) and to pad monomials of lower degree. For example, for a quadratic polynomial in real parameters (see below for how complex parameters are handled):
@@ -284,11 +287,15 @@ Each polynomial coefficient is labelled by a *monomial key*, written as a string
 These conventions ensure a canonical and unambiguous representation of polynomial terms while offering flexibility in the naming of model parameters. Missing monomials are implicitly treated as having zero coefficients.
 
  The `data` field is a `JSON` object with the following subfields:
+
 ### `observable_central` (optional, *type: object*)
 
 An object representing the central values of the polynomial coefficients for the expanded observables, $\vec{o}_m$. Each key must be a monomial key as defined above. The values must be a list of $M$ numbers whose order matches `metadata.observable_names`.
 
-The example below specifies three observable predictions, $O_{m}$, given by
+Example:
+
+
+Specifying three observable predictions, $O_{m}$, given by
 
 $$
 \begin{aligned}
@@ -297,8 +304,6 @@ $$
     O_3 &= 2.3 + 0.3\,C_1 + 0.7 \,C_1C_2 + 0.5 \,C_1C_3\,.
 \end{aligned}
 $$
-
-**Example:**
 
 ```json
   "observable_central": {
@@ -313,15 +318,16 @@ $$
 
 An object representing the central values of the polynomial coefficients for each named polynomial, $\vec{p}_k$. Each key must be a monomial key as defined above. The values must be a list of $K$ numbers whose order matches `metadata.polynomial_names`.
 
-The example below specifies two polynomials, $P_k$, given by
+Example:
+
+
+Specifying two polynomials, $P_k$, given by
 
 $$\begin{aligned}
     P_1 &=1.0 + 1.2 \,\mathrm{Im}(C_1) + 0.8 \,\mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.5 \,\mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.2 \,\mathrm{Im}(C_1) \mathrm{Im}(C_2)\,, \\
     P_2 &= 1.1 + 1.3 \,\mathrm{Im}(C_1)  + 0.85 \,\mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.55 \,\mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.25 \,\mathrm{Im}(C_1) \mathrm{Im}(C_2)\,.
 \end{aligned}
 $$
-
-**Example:**
 
 ```json
   "polynomial_central": {
@@ -337,7 +343,7 @@ $$
 
 An object representing the uncertainties on the polynomial coefficients for the expanded observables. The fields specify the nature of quoted uncertainty. In many cases there may only be a single top-level field, `"total"`, but multiple fields can be used to specify a breakdown into several sources of uncertainty (e.g., statistical, scale, PDF, ...). The values can either be an object or a list of floats. Objects must have the same structure as `observable_central`, lists must have length $M$. If instead of an object, a list of floats is specified, it is assumed to correspond to the parameter independent uncertainty only (e.g. the uncertainty on the SM prediction). This would be equivalent to specifying an object with the single key, `"('', '')"`, matching the number of empty strings in the tuple to `metadata.polynomial_order`.
 
-**Examples:**
+Examples:
 
 ```json
   "observable_uncertainties": {
