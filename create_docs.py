@@ -243,6 +243,9 @@ def write_markdown(schema, out_path):
     md_lines.append(schema.get("description", "").strip())
     md_lines.append("")  # spacer
 
+    metadata_section = schema["properties"]["$schema"]
+    walk_properties(md_lines, metadata_section)
+
     metadata_section = schema["properties"]["metadata"]
     walk_properties(md_lines, metadata_section)
 
