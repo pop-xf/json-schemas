@@ -99,7 +99,7 @@ Schematic example:
 The predefined fields are as follows:
 
 - **`description` (optional, *type: string*)**: Free-form text description of the method and tool used in this step of obtaining the predictions.
-- **`inputs` (optional, *type: object*)**: Specifies the numerical values of input parameters used by the tool in producing the numerical values of the polynomial coefficients. Each entry maps an input name (a string) or a group of names (as a stringified tuple, e.g.`"('m1','m2')"`) to one of the following:
+- **`inputs` (optional, *type: object*)**: Specifies the numerical values of input parameters used by the tool in producing the numerical values of the polynomial coefficients. Each entry maps an input name (a string) or a group of names (a stringified tuple such as `"('m1','m2')"`) to one of the following:
   - A single number: interpreted as the central value of a single, uncorrelated input parameter without uncertainty;
   - An object representing a uni- or multi-variate normal distribution describing one or more possibly correlated input parameters with uncertainties. This object can contain the subfields `mean`, `std`, and `corr`. If the key of the object is a stringified tuple of $N$ input names (e.g., `"('m1','m2')"` with $N = 2$), describing a group of $N$ possibly correlated input parameters, then `mean` and (if present) `std` must be arrays of length $N$, and (if present) `corr` must be an $N \times N$ matrix, expressed as an array of $N$ arrays of $N$ numbers. The subfields are defined as follows:
     - **`mean` (required, *type: ['number', 'array']*)**: central value / mean; a single number for a single input name, or an array of numbers for a group of input names;
@@ -302,7 +302,7 @@ An object representing the central values of the polynomial coefficients for the
 Example:
 
 
-Specifying three observable predictions, $O_{m}$, given by
+Specifying three observable predictions, $O_{m}$, given in terms of the three real parameters $C_1$, $C_2$, and $C_3$ as
 
 $$
 \begin{aligned}
@@ -328,7 +328,7 @@ An object representing the central values of the polynomial coefficients for eac
 Example:
 
 
-Specifying two polynomials, $P_k$, given by
+Specifying two polynomials, $P_k$, given given in terms of two complex parameters $C_1$ and $C_2$ as
 
 $$\begin{aligned}
     P_1 &=1.0 + 1.2 \,\mathrm{Im}(C_1) + 0.8 \,\mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.5 \,\mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.2 \,\mathrm{Im}(C_1) \mathrm{Im}(C_2)\,, \\
