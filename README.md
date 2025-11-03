@@ -142,7 +142,7 @@ The predefined fields are as follows:
       - `perturbative_order` (e.g. `"LO"`, `"NLO"`, `"NLOQCD"`, ...)
       - `PDF`: name, version, and set of the PDF used.
       - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.
-      - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `dynamical:HT/2`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.
+      - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `"dynamical:HT/2"`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.
       - `renormalization_scheme`: details of the renormalization scheme used in the computation.
       - `covariant_derivative_sign`: sign convention used for the covariant derivative (`"+"` or `"-"`).
       - `gamma5_scheme`: scheme used for $\gamma_5$ in dimensional regularization (`"BMHV"`, `"KKS"`, ...).
