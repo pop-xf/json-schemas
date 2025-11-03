@@ -204,6 +204,8 @@ The predefined fields are as follows:
 
 ### `polynomial_names` (optional, *type: array of string*)
 
+*Required in function-of-polynomials mode.*
+
 Array of names identifying the individual polynomials used in function-of-polynomials mode. Must contain unique, non-empty strings.
 
 Example:
@@ -213,6 +215,8 @@ Example:
 ```
 
 ### `observable_expressions` (optional, *type: array of object*)
+
+*Required in function-of-polynomials mode.*
 
 Defines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:
 
@@ -322,6 +326,8 @@ $$
 ```
 
 ### `polynomial_central` (optional, *type: object*)
+
+*Required in function-of-polynomials mode.*
 
 An object representing the central values of the polynomial coefficients for each named polynomial, $\vec{p}_k$. Each key must be a monomial key as defined above. The values must be an array of $K$ numbers whose order matches `metadata.polynomial_names`.
 
