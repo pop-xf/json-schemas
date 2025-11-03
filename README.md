@@ -139,13 +139,13 @@ The predefined fields are as follows:
   - **`name` (required, *type: string*)**: name of tool, e.g. `"MadGraph5_aMC@NLO"`, `"POWHEG"`,  `"SHERPA"`, `"WHIZARD"`, `"flavio"`, `"FeynCalc"`, `"analytical calculation"`, ...
   - **`version` (optional, *type: string*)**: version of the tool, e.g. `"1.2"`
   - **`settings` (optional, *type: object*)**: object containing information about the tool settings with free-form substructure. For example:
-      - `perturbative_order` (e.g. `LO`, `NLO`, `NLOQCD`, ...)
+      - `perturbative_order` (e.g. `"LO"`, `"NLO"`, `"NLOQCD"`, ...)
       - `PDF`: name, version, and set of the PDF used.
       - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.
       - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `dynamical:HT/2`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.
       - `renormalization_scheme`: details of the renormalization scheme used in the computation.
-      - `covariant_derivative_sign`: sign convention used for the covariant derivative ("+" or "-").
-      - `gamma5_scheme`: scheme used for $\gamma_5$ in dimensional regularization ("BMHV", "KKS", ...).
+      - `covariant_derivative_sign`: sign convention used for the covariant derivative (`"+"` or `"-"`).
+      - `gamma5_scheme`: scheme used for $\gamma_5$ in dimensional regularization (`"BMHV"`, `"KKS"`, ...).
       - `evanescent`: details of the treatment of evanescent operators, e.g. a reference to the scheme used.
       - `approximations`: Any relevant approximations used, such as the use of the first leading-logarithmic approximation for RG evolution.
       - any other relevant settings specific to the tool or calculation.
