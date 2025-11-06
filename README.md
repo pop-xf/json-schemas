@@ -56,14 +56,18 @@ Example:
 ### `scale` (required, *type: number, array*)
 
 The renormalisation scale in GeV at which the parameter vector $\vec{C}$ is defined. This field can take one of two forms:
-- a single number, $\mu$:  interpreted as the common scale for all observables. The polynomial expression for observable $O_m$ is understood to be a function of the parameters evolved to that common scale:
-  $$O_m = a_m + \vec{C}(\mu) \cdot \vec{b}_m(\mu) + \dots$$
-- an array of numbers, $\mu_m$:
-  defining a separate scale for each observable. The array must have the same length $M$ as the array of observables. The polynomial expression for observable $O_m$ is understood to be a function of the parameters evolved to its corresponding scale:
-  $$O_m = a_m + \vec{C}(\mu_m) \cdot \vec{b}_m(\mu_m) + \dots$$
+
+- a single number, $\mu$: interpreted as the common scale for all observables. The polynomial expression for observable $O_m$ is understood to be a function of the parameters evolved to that common scale:
+
+  $$O_m = a_m + \vec{C}(\mu) \cdot \vec{b}_m(\mu) + \dots\ $$
+
+- an array of numbers, $\mu_m$: defining a separate scale for each observable. The array must have the same length $M$ as the array of observables. The polynomial expression for observable $O_m$ is understood to be a function of the parameters evolved to its corresponding scale:
+
+  $$O_m = a_m + \vec{C}(\mu_m) \cdot \vec{b}_m(\mu_m) + \dots\ $$
+
   The array-of-numbers form is restricted in function-of-polynomials mode (see  Appendix A for details).
 
-For a given observable, the observable coefficients $\vec{o}_m \supset \vec{b}_m, \vec{c}_m, \dots$ depend on the scale at which the parameters are defined, such that the observable itself is scale independent up to higher-order corrections in perturbation theory.
+For a given observable, the observable coefficients ${\vec{o}_m \supset \vec{b}_m, \vec{c}_m, \dots}$ depend on the scale at which the parameters are defined, such that the observable itself is scale independent up to higher-order corrections in perturbation theory.
 
 Examples:
 
@@ -310,9 +314,9 @@ Specifying three observable predictions, $O_{m}$, given in terms of the three re
 
 $$
 \begin{aligned}
-    O_1 &= 1.0 + 1.2 \,C_1 + 1.4 \,C_1C_2+ 1.6 \,C_1C_3\,, \\
-    O_2 &= 1.1 + 1.3 \,C_1 + 1.5 \,C_1C_2+ 1.7 \,C_1C_3\,, \\
-    O_3 &= 2.3 + 0.3\,C_1 + 0.7 \,C_1C_2 + 0.5 \,C_1C_3\,.
+    O_1 &= 1.0 + 1.2 \ C_1 + 1.4 \ C_1C_2+ 1.6 \ C_1C_3\ , \\
+    O_2 &= 1.1 + 1.3 \ C_1 + 1.5 \ C_1C_2+ 1.7 \ C_1C_3\ , \\
+    O_3 &= 2.3 + 0.3\ C_1 + 0.7 \ C_1C_2 + 0.5 \ C_1C_3\ .
 \end{aligned}
 $$
 
@@ -338,8 +342,8 @@ Specifying two polynomials, $P_k$, given given in terms of two complex parameter
 
 $$
 \begin{aligned}
-    P_1 &= 1.0 + 1.2 \,\mathrm{Im}(C_1) + 0.8 \,\mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.5 \,\mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.2 \,\mathrm{Im}(C_1) \mathrm{Im}(C_2)\,, \\
-    P_2 &= 1.1 + 1.3 \,\mathrm{Im}(C_1)  + 0.85 \,\mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.55 \,\mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.25 \,\mathrm{Im}(C_1) \mathrm{Im}(C_2)\,.
+    P_1 &= 1.0 + 1.2 \ \mathrm{Im}(C_1) + 0.8 \ \mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.5 \ \mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.2 \ \mathrm{Im}(C_1) \mathrm{Im}(C_2)\ , \\
+    P_2 &= 1.1 + 1.3 \ \mathrm{Im}(C_1)  + 0.85 \ \mathrm{Re}(C_1) \mathrm{Re}(C_2) + 0.55 \ \mathrm{Re}(C_1) \mathrm{Im}(C_2)+ 0.25 \ \mathrm{Im}(C_1) \mathrm{Im}(C_2)\ .
 \end{aligned}
 $$
 
