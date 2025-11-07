@@ -21,14 +21,24 @@ Example:
   "observable_names": ["observable1", "observable2", "observable3"]
 ```
 
+### `parameters` (required, *type: array of string*)
+
+Array of model parameters (e.g., Wilson coefficient names) used in the polynomial expansion. Must be an array of unique, non-empty strings, with at least one entry.
+
+Example:
+
+```json
+  "parameters": ["C1", "C2", "C3"]
+```
+
 ### `basis` (required, *type: object*)
 
-Defines the parameter basis (e.g. an operator basis in an EFT). At least one of the two subfields `wcxf` and `custom` has to be present. If both subfields are present, any element of `parameters` (see below) not belonging to the `wcxf` basis is interpreted as belonging to the `custom` basis. The subfields are defined as follows:
+Defines the parameter basis (e.g. an operator basis in an EFT). At least one of the two subfields `wcxf` and `custom` has to be present. If both subfields are present, any element of `parameters` (see above) not belonging to the `wcxf` basis is interpreted as belonging to the `custom` basis. The subfields are defined as follows:
 
 - **`wcxf` (optional, *type: object*)**: Specifies an EFT basis defined by the Wilson Coefficient exchange format (WCxf) [@Aebischer:2017ugx]. This object contains the following fields:
   - **`eft` (required, *type: string*)**: EFT name defined by WCxf (e.g., `"SMEFT"`)
   - **`basis` (required, *type: string*)**: Operator basis name defined by WCxf (e.g., `"Warsaw"`)
-  - **`sectors` (optional, *type: array of string*)**: Array of renormalisation-group-closed sectors of Wilson coefficients containing the Wilson coefficients given in `parameters` (see below). The available sectors for each EFT are defined by WCxf.
+  - **`sectors` (optional, *type: array of string*)**: Array of renormalisation-group-closed sectors of Wilson coefficients containing the Wilson coefficients given in `parameters` (see above). The available sectors for each EFT are defined by WCxf.
 - **`custom` (optional, *type: any*)**: Field of any type and substructure to unambiguously specify any parameter basis not defined by WCxf.
 
 Example:
@@ -41,16 +51,6 @@ Example:
       "sectors": ["dB=de=dmu=dtau=0"]
     }
   }
-```
-
-### `parameters` (required, *type: array of string*)
-
-Array of model parameters (e.g., Wilson coefficient names) used in the polynomial expansion. Must be an array of unique, non-empty strings, with at least one entry.
-
-Example:
-
-```json
-  "parameters": ["C1", "C2", "C3"]
 ```
 
 ### `scale` (required, *type: number, array*)
@@ -77,6 +77,64 @@ Examples:
 
 ```json
   "scale": [100.0, 200.0, 300.0, 400.0, 500.0]
+```
+
+### `polynomial_names` (optional, *type: array of string*)
+
+*Required in function-of-polynomials mode.*
+
+Array of names identifying the individual polynomials used in function-of-polynomials mode. Must contain unique, non-empty strings.
+
+Example:
+
+```json
+  "polynomial_names": ["polynomial 1", "polynomial 2"]
+```
+
+### `observable_expressions` (optional, *type: array of object*)
+
+*Required in function-of-polynomials mode.*
+
+Defines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:
+
+- **`variables` (required, *type: object*)**: An object where each key is a string that is a Python-compatible variable name (used as variable in the `expression` field described below), and each value is a string identifying a polynomial name from `polynomial_names`. For example, `{"num": "polynomial 1", "den": "polynomial 2"}`.
+- **`expression` (required, *type: string*)**: A Python-compatible mathematical expression using the dummy variable names defined in `variables`, e.g. `"num/den"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used.
+
+Example:
+
+```json
+  "observable_expressions": [
+    {
+      "variables": {
+        "num": "polynomial 1",
+        "den": "polynomial 2"
+      },
+      "expression": "num / den"
+    },
+    {
+      "variables": {
+        "num": "polynomial 2",
+        "den": "polynomial 1"
+      },
+      "expression": "num / den"
+    },
+    {
+      "variables": {
+        "p1": "polynomial 1"
+      },
+      "expression": "sqrt(p1**2)"
+    }
+  ]
+```
+
+### `polynomial_order` (optional, *type: integer*)
+
+Specifies the maximum degree of polynomial terms included in the expansion. If omitted, the default value is 2 (i.e., quadratic polynomial). Values higher than 2 may be used to represent observables involving higher-order terms in the model parameters. The current implementation of the `JSON` schema defining the data format supports values up to 5. Higher orders are not prohibited in principle but are currently unsupported to avoid excessively large data structures.
+
+Example:
+
+```json
+  "polynomial_order": 2
 ```
 
 ### `reproducibility` (optional, *type: array of object*)
@@ -205,64 +263,6 @@ The predefined fields are as follows:
       }
     }
   ```
-
-### `polynomial_names` (optional, *type: array of string*)
-
-*Required in function-of-polynomials mode.*
-
-Array of names identifying the individual polynomials used in function-of-polynomials mode. Must contain unique, non-empty strings.
-
-Example:
-
-```json
-  "polynomial_names": ["polynomial 1", "polynomial 2"]
-```
-
-### `observable_expressions` (optional, *type: array of object*)
-
-*Required in function-of-polynomials mode.*
-
-Defines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:
-
-- **`variables` (required, *type: object*)**: An object where each key is a string that is a Python-compatible variable name (used as variable in the `expression` field described below), and each value is a string identifying a polynomial name from `polynomial_names`. For example, `{"num": "polynomial 1", "den": "polynomial 2"}`.
-- **`expression` (required, *type: string*)**: A Python-compatible mathematical expression using the dummy variable names defined in `variables`, e.g. `"num/den"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used.
-
-Example:
-
-```json
-  "observable_expressions": [
-    {
-      "variables": {
-        "num": "polynomial 1",
-        "den": "polynomial 2"
-      },
-      "expression": "num / den"
-    },
-    {
-      "variables": {
-        "num": "polynomial 2",
-        "den": "polynomial 1"
-      },
-      "expression": "num / den"
-    },
-    {
-      "variables": {
-        "p1": "polynomial 1"
-      },
-      "expression": "sqrt(p1**2)"
-    }
-  ]
-```
-
-### `polynomial_order` (optional, *type: integer*)
-
-Specifies the maximum degree of polynomial terms included in the expansion. If omitted, the default value is 2 (i.e., quadratic polynomial). Values higher than 2 may be used to represent observables involving higher-order terms in the model parameters. The current implementation of the `JSON` schema defining the data format supports values up to 5. Higher orders are not prohibited in principle but are currently unsupported to avoid excessively large data structures.
-
-Example:
-
-```json
-  "polynomial_order": 2
-```
 
 ### `misc` (optional, *type: object*)
 
