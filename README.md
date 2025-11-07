@@ -1,12 +1,12 @@
-# Specification of Fields in the `POPxf` JSON Format
-A detailed specification of all fields in the proposed `POPxf` data format is given below. Each subsection describes the structure, expected data type, and allowed values of the corresponding entries in the `JSON` object. The data type *object* mentioned below refers to a `JSON` object literal and corresponds to a set of key/value pairs representing named subfields. The format is divided into two main components: the `metadata` and `data` fields. An additional `$schema` field is included to specify the version of the `POPxf` schema used. All quantities defined in this specification refer to a single datafile. They may be indexed by a superscript $(n)$ with $n \in [1,N]$ to denote quantities in a collection of $N$ datafiles. This is particularly relevant for discussing correlated predictions stored in separate files. Since this specification focuses on the format of a single datafile, we will omit the superscript $(n)$ to keep the notation concise. As a convention, we assume that all dimensionful quantities are given in units of GeV.
+# Specification of Fields in the `POPxf` `JSON` Format
+A detailed specification of all fields in the proposed `POPxf` data format is given below. Each subsection describes the structure, expected data type, and allowed values of the corresponding entries in the `JSON` object. The data type *object* mentioned below refers to a `JSON` object literal and corresponds to a set of key/value pairs representing named subfields. The format is divided into two main components: the `metadata` and `data` fields. An additional `$schema` field is included to specify the version of the `POPxf` `JSON` schema used. All quantities defined in this specification refer to a single datafile. They may be indexed by a superscript $(n)$ with $n \in [1,N]$ to denote quantities in a collection of $N$ datafiles. This is particularly relevant for discussing correlated predictions stored in separate files. Since this specification focuses on the format of a single datafile, we will omit the superscript $(n)$ to keep the notation concise. As a convention, we assume that all dimensionful quantities are given in units of GeV.
 
 ## `$schema` Field
-The `$schema` field allows identifying a `JSON` file as conforming to the `POPxf` format and specifies the version of the `POPxf` schema used. It must be set to
+The `$schema` field allows identifying a `JSON` file as conforming to the `POPxf` format and specifies the version of the `POPxf` `JSON` schema used. It must be set to
 
 `"https://json.schemastore.org/popxf-1.0.json"`
 
-for files conforming to this version of the specification. The version number will be incremented for future revisions of the schema.
+for files conforming to this version of the specification. The version number will be incremented for future revisions of the `JSON` schema.
 
 ## `metadata` Field
 The `metadata` field contains all contextual and structural information required to interpret the numerical predictions. It is a `JSON` object with the following subfields:
@@ -354,7 +354,7 @@ An object representing the central values of the polynomial coefficients for eac
 Example:
 
 
-Specifying two polynomials, $P_k$, given given in terms of two complex parameters $C_1$ and $C_2$ as
+Specifying two polynomials, $P_k$, given in terms of two complex parameters $C_1$ and $C_2$ as
 
 $$
 \begin{aligned}
