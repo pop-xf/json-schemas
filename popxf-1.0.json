@@ -145,7 +145,7 @@
             "minLength": 1
           },
           "uniqueItems": true,
-          "description": "*Required in function-of-polynomials mode.*\n\nArray of names identifying the individual polynomials used in function-of-polynomials mode. Must contain unique, non-empty strings.",
+          "description": "*The presence of this field requires the simultaneous presence of `metadata.observable_expressions` and `data.polynomial_central`.*\n\nArray of names identifying the individual polynomials that enter the observable predictions through the functions defined in `metadata.observable_expressions`. Must contain unique, non-empty strings.",
           "examples": [
             {
               "polynomial_names": ["polynomial 1", "polynomial 2"]
@@ -154,7 +154,7 @@
         },
         "observable_expressions": {
           "type": "array",
-          "description": "*Required in function-of-polynomials mode.*\n\nDefines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:",
+          "description": "*The presence of this field requires the simultaneous presence of `metadata.polynomial_names` and `data.polynomial_central`.*\n\nDefines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:",
           "items": {
             "type": "object",
             "properties": {
@@ -455,7 +455,7 @@
             "type":  "array",
             "items": { "type": "number" }
           },
-          "description": "*Required in function-of-polynomials mode.*\n\nAn object representing the central values of the polynomial coefficients for each named polynomial, $\\vec{p}_k$. Each key must be a monomial key as defined above. The values must be an array of $K$ numbers whose order matches `metadata.polynomial_names`.",
+          "description": "*The presence of this field requires the simultaneous presence of `metadata.polynomial_names` and `metadata.observable_expressions`.*\n\nAn object representing the central values of the polynomial coefficients for each named polynomial, $\\vec{p}_k$. Each key must be a monomial key as defined above. The values must be an array of $K$ numbers whose order matches `metadata.polynomial_names`.",
           "examples": [
             {
               "description": "Specifying two polynomials, $P_k$, given given in terms of two complex parameters $C_1$ and $C_2$ as\n\n$$\n\\begin{aligned}\n    P_1 &= 1.0 + 1.2 \\ \\mathrm{Im}(C_1) + 0.8 \\ \\mathrm{Re}(C_1) \\mathrm{Re}(C_2) + 0.5 \\ \\mathrm{Re}(C_1) \\mathrm{Im}(C_2)+ 0.2 \\ \\mathrm{Im}(C_1) \\mathrm{Im}(C_2)\\ , \\\\\n    P_2 &= 1.1 + 1.3 \\ \\mathrm{Im}(C_1)  + 0.85 \\ \\mathrm{Re}(C_1) \\mathrm{Re}(C_2) + 0.55 \\ \\mathrm{Re}(C_1) \\mathrm{Im}(C_2)+ 0.25 \\ \\mathrm{Im}(C_1) \\mathrm{Im}(C_2)\\ .\n\\end{aligned}\n$$",
