@@ -120,24 +120,6 @@
             }
           ]
         },
-        "scale": {
-          "oneOf": [
-            { "type": "number" },
-            {
-              "type": "array",
-              "items": { "type": "number" }
-            }
-          ],
-          "description": "The renormalisation scale in GeV at which the parameter vector $\\vec{C}$, the polynomial coefficients $\\vec p_k$, and the observable coefficients $\\vec o_m$ are defined. The parameter vector $\\vec{C}$ that enters a given polynomial $P_k$ or observable $O_m$ has to be given at the same scale at which the polynomial coefficients $\\vec{p}_k$ or observable coefficients $\\vec{o}_m$ are defined, such that the polynomial or observable itself is scale-independent up to higher-order corrections in perturbation theory.\n\nThis field can take one of two forms:\n\n- **single number**: A common scale $\\mu$ at which all polynomial coefficients $\\vec p_k$ or observable coefficients $\\vec o_m$ are defined.\n\n  - If the observables $O_m$ are expressed in terms of polynomials $P_k$, the polynomials are functions of the parameters evolved to the common scale $\\mu$:\n\n    $$P_k = a_{k} + \\vec{C}(\\mu) \\cdot \\vec{b}_{k}(\\mu) + \\dots\\ $$\n\n  - If the observables $O_m$ are themselves polynomials, they are themselves functions of the parameters evolved to the common scale $\\mu$:\n\n    $$O_m = a_m + \\vec{C}(\\mu) \\cdot \\vec{b}_m(\\mu) + \\dots\\ $$\n\n- **array of numbers**: An array defining separate scales $\\mu_k$ of polynomial coefficients $\\vec p_k$  if `metadata.polynomial_names` is present, or separate scales $\\mu_m$ of observable coefficients $\\vec o_m$ if `metadata.polynomial_names` is absent.\n\n  - If `metadata.polynomial_names` is present, the observables $O_m$ are expressed in terms of polynomials $P_k$ and each polynomial is a function of the parameters evolved to its corresponding scale $\\mu_k$:\n\n    $$P_k = a_{k} + \\vec{C}(\\mu_k) \\cdot \\vec{b}_{k}(\\mu_k) + \\dots\\ $$\n\n    The length and order of the array defining the scales $\\mu_k$ must match those of the field `metadata.polynomial_names`. To avoid ambiguities, the following restrictions apply to this case:\n\n    - `data.observable_central` must be absent;\n    - `data.observable_uncertainties` must be absent or only define uncertainties for the parameter-independent terms (i.e. only the SM uncertainties in EFT applications).\n  - If `metadata.polynomial_names` is absent, the observables $O_m$ are themselves polynomials and each observable is a function of the parameters evolved to its corresponding scale $\\mu_m$:\n\n    $$O_m = a_m + \\vec{C}(\\mu_m) \\cdot \\vec{b}_m(\\mu_m) + \\dots\\ $$\n\n    The length and order of the array defining the scales $\\mu_m$ must match those of the field `metadata.observable_names`.",
-          "examples": [
-            {
-              "scale": 91.1876
-            },
-            {
-              "scale": [100.0, 200.0, 300.0, 400.0, 500.0]
-            }
-          ]
-        },
         "polynomial_names": {
           "type": "array",
           "items": {
@@ -194,6 +176,24 @@
                   "expression": "sqrt(p1**2)"
                 }
               ]
+            }
+          ]
+        },
+        "scale": {
+          "oneOf": [
+            { "type": "number" },
+            {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          ],
+          "description": "The renormalisation scale in GeV at which the parameter vector $\\vec{C}$, the polynomial coefficients $\\vec p_k$, and the observable coefficients $\\vec o_m$ are defined. The parameter vector $\\vec{C}$ that enters a given polynomial $P_k$ or observable $O_m$ has to be given at the same scale at which the polynomial coefficients $\\vec{p}_k$ or observable coefficients $\\vec{o}_m$ are defined, such that the polynomial or observable itself is scale-independent up to higher-order corrections in perturbation theory.\n\nThis field can take one of two forms:\n\n- **single number**: A common scale $\\mu$ at which all polynomial coefficients $\\vec p_k$ or observable coefficients $\\vec o_m$ are defined.\n\n  - If the observables $O_m$ are expressed in terms of polynomials $P_k$, the polynomials are functions of the parameters evolved to the common scale $\\mu$:\n\n    $$P_k = a_{k} + \\vec{C}(\\mu) \\cdot \\vec{b}_{k}(\\mu) + \\dots\\ $$\n\n  - If the observables $O_m$ are themselves polynomials, they are themselves functions of the parameters evolved to the common scale $\\mu$:\n\n    $$O_m = a_m + \\vec{C}(\\mu) \\cdot \\vec{b}_m(\\mu) + \\dots\\ $$\n\n- **array of numbers**: An array defining separate scales $\\mu_k$ of polynomial coefficients $\\vec p_k$  if `metadata.polynomial_names` is present, or separate scales $\\mu_m$ of observable coefficients $\\vec o_m$ if `metadata.polynomial_names` is absent.\n\n  - If `metadata.polynomial_names` is present, the observables $O_m$ are expressed in terms of polynomials $P_k$ and each polynomial is a function of the parameters evolved to its corresponding scale $\\mu_k$:\n\n    $$P_k = a_{k} + \\vec{C}(\\mu_k) \\cdot \\vec{b}_{k}(\\mu_k) + \\dots\\ $$\n\n    The length and order of the array defining the scales $\\mu_k$ must match those of the field `metadata.polynomial_names`. To avoid ambiguities, the following restrictions apply to this case:\n\n    - `data.observable_central` must be absent;\n    - `data.observable_uncertainties` must be absent or only define uncertainties for the parameter-independent terms (i.e. only the SM uncertainties in EFT applications).\n  - If `metadata.polynomial_names` is absent, the observables $O_m$ are themselves polynomials and each observable is a function of the parameters evolved to its corresponding scale $\\mu_m$:\n\n    $$O_m = a_m + \\vec{C}(\\mu_m) \\cdot \\vec{b}_m(\\mu_m) + \\dots\\ $$\n\n    The length and order of the array defining the scales $\\mu_m$ must match those of the field `metadata.observable_names`.",
+          "examples": [
+            {
+              "scale": 91.1876
+            },
+            {
+              "scale": [100.0, 200.0, 300.0, 400.0, 500.0]
             }
           ]
         },
