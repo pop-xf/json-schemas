@@ -59,6 +59,7 @@
         "observable_names": {
           "type": "array",
           "description": "Array of $M$ names identifying each observable. Must be an array of unique, non-empty strings, with at least one entry.",
+          "minItems": 1,
           "items": {
             "type": "string",
             "minLength": 1
@@ -72,6 +73,7 @@
         },
         "parameters": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string",
             "minLength": 1
@@ -135,6 +137,7 @@
         },
         "polynomial_names": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string",
             "minLength": 1
@@ -150,11 +153,13 @@
         "observable_expressions": {
           "type": "array",
           "description": "*This field is required to express observables as functions of polynomials. It requires the simultaneous presence of `metadata.polynomial_names` and `data.polynomial_central`.*\n\nDefines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:",
+          "minItems": 1,
           "items": {
             "type": "object",
             "properties": {
               "variables": {
                 "type": "object",
+                "minProperties": 1,
                 "propertyNames": { "minLength": 1 },
                 "additionalProperties": {
                   "type": "string",
@@ -164,6 +169,7 @@
               },
               "expression": {
                 "type": "string",
+                "minLength": 1,
                 "description": "A Python-compatible mathematical expression using the dummy variable names defined in `variables`, e.g. `\"num/den\"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used."
               }
             },
@@ -197,6 +203,7 @@
             { "type": "number" },
             {
               "type": "array",
+              "minItems": 1,
               "items": { "type": "number" }
             }
           ],
@@ -230,10 +237,12 @@
             "properties": {
               "description": {
                 "type": "string",
+                "minLength": 1,
                 "description": "Free-form text description of the method and tool used in this step of obtaining the predictions."
               },
               "inputs": {
                 "type": "object",
+                "minProperties": 1,
                 "description": "Specifies the numerical values of input parameters used by the tool in producing the numerical values of the polynomial coefficients. Each entry maps an input name (a string) or a group of names (a stringified tuple such as `\"('m1','m2')\"`) to one of the following:",
                 "additionalProperties": {
                   "anyOf": [
@@ -250,6 +259,7 @@
                             "number",
                             "array"
                           ],
+                          "minItems": 2,
                           "items": { "type": "number" },
                           "description": "central value / mean; a single number for a single input name, or an array of numbers for a group of input names;"
                         },
@@ -258,13 +268,16 @@
                             "number",
                             "array"
                           ],
+                          "minItems": 2,
                           "items": { "type": "number" },
                           "description": "uncertainty / standard deviation; a single number for a single input name, or an array of numbers for a group of input names;"
                         },
                         "corr": {
                           "type": "array",
+                          "minItems": 2,
                           "items": {
                             "type": "array",
+                            "minItems": 2,
                             "items": { "type": "number" }
                           },
                           "description": "correlation matrix; must only be used if a group of input names is given and requires the presence of `std`."
@@ -282,27 +295,32 @@
                       "properties": {
                         "distribution_type": {
                           "type": "string",
+                          "minLength": 1,
                           "description": "a user-defined name identifying the probability distribution (e.g. `\"uniform\"`);"
                         },
                         "distribution_parameters": {
                           "type": "object",
+                          "minProperties": 1,
                           "description": "an object where each key is a user-defined name of a parameter of the probability distribution, and each value is a single number in the univariate case, or an array of numbers or arrays in the multivariate case (e.g. `{\"a\":0, \"b\":1}` for a uniform distribution with boundaries $a$ and $b$).",
                           "additionalProperties": {
                             "type": [
                               "number",
                               "array"
                             ],
+                            "minItems": 2,
                             "items": {
                               "type": [
                                 "number",
                                 "array"
                               ],
+                              "minItems": 2,
                               "items": { "type": "number"}
                             }
                           }
                         },
                         "distribution_description": {
                           "type": "string",
+                          "minLength": 1,
                           "description": "Description of the custom distribution implemented, defining the fields in `distribution_parameters`."
                         }
                       },
@@ -344,14 +362,17 @@
                 "properties": {
                   "name": {
                     "type": "string",
+                    "minLength": 1,
                     "description": "name of tool, e.g. `\"MadGraph5_aMC@NLO\"`, `\"POWHEG\"`,  `\"SHERPA\"`, `\"WHIZARD\"`, `\"flavio\"`, `\"FeynCalc\"`, `\"analytical calculation\"`, ..."
                   },
                   "version": {
                     "type": "string",
+                    "minLength": 1,
                     "description": "version of the tool, e.g. `\"1.2\"`"
                   },
                   "settings": {
                     "type": "object",
+                    "minProperties": 1,
                     "description": "object containing information about the tool settings with free-form substructure. For example:\n      - `perturbative_order` (e.g. `\"LO\"`, `\"NLO\"`, `\"NLOQCD\"`, ...)\n      - `PDF`: name, version, and set of the PDF used.\n      - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.\n      - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `\"dynamical:HT/2\"`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.\n      - `renormalization_scheme`: details of the renormalization scheme used in the computation.\n      - `covariant_derivative_sign`: sign convention used for the covariant derivative (`\"+\"` or `\"-\"`).\n      - `gamma5_scheme`: scheme used for $\\gamma_5$ in dimensional regularization (`\"BMHV\"`, `\"KKS\"`, ...).\n      - `evanescent`: details of the treatment of evanescent operators, e.g. a reference to the scheme used.\n      - `approximations`: Any relevant approximations used, such as the use of the first leading-logarithmic approximation for RG evolution.\n      - any other relevant settings specific to the tool or calculation."
                   }
                 },
@@ -373,7 +394,7 @@
                           "version":"1.0.0",
                           "webpage":"https://smeftufo.io"
                         },
-                      "PDF":{
+                        "PDF":{
                           "name":"LHAPDF",
                           "version":"6.5.5",
                           "set":"331700"
@@ -411,6 +432,7 @@
         },
         "misc": {
           "type": "object",
+          "minProperties": 1,
           "description": "Optional free-form metadata for documentation purposes. May include fields such as authorship, contact information, date, description of the observable, information identifying the associated correlation file (e.g. hash value or filename), or external references. The format is unrestricted, allowing any `JSON`-encodable content.",
           "examples": [
             {
@@ -445,8 +467,10 @@
       "properties": {
         "observable_central": {
           "type": "object",
+          "minProperties": 1,
           "additionalProperties": {
             "type": "array",
+            "minItems": 1,
             "items": { "type": "number" }
           },
           "description": "An object representing the central values of the polynomial coefficients for the expanded observables, $\\vec{o}_m$. Each key must be a monomial key as defined above. The values must be an array of $M$ numbers whose order matches `metadata.observable_names`.",
@@ -464,8 +488,10 @@
         },
         "polynomial_central": {
           "type": "object",
+          "minProperties": 1,
           "additionalProperties": {
             "type":  "array",
+            "minItems": 1,
             "items": { "type": "number" }
           },
           "description": "*This field is required to express observables as functions of polynomials. It requires the simultaneous presence of `metadata.polynomial_names` and `metadata.observable_expressions`.*\n\nAn object representing the central values of the polynomial coefficients for each named polynomial, $\\vec{p}_k$. Each key must be a monomial key as defined above. The values must be an array of $K$ numbers whose order matches `metadata.polynomial_names`.",
@@ -484,18 +510,22 @@
         },
         "observable_uncertainties": {
           "type": "object",
+          "minProperties": 1,
           "description": "An object representing the uncertainties on the polynomial coefficients for the expanded observables. The fields specify the nature of quoted uncertainty. In many cases there may only be a single top-level field, `\"total\"`, but multiple fields can be used to specify a breakdown into several sources of uncertainty (e.g., statistical, scale, PDF, ...). The values can either be an object or an array of floats. Objects must have the same structure as `observable_central`, arrays must have length $M$. If instead of an object, an array of floats is specified, it is assumed to correspond to the parameter independent uncertainty only (e.g. the uncertainty on the SM prediction). This would be equivalent to specifying an object with the single key, `\"('', '')\"`, matching the number of empty strings in the tuple to `metadata.polynomial_order`.",
           "additionalProperties": {
             "oneOf": [
               {
                 "type": "object",
+                "minProperties": 1,
                 "additionalProperties": {
                   "type": "array",
+                  "minItems": 1,
                   "items": { "type": "number" }
                 }
               },
               {
                 "type": "array",
+                "minItems": 1,
                 "items": { "type": "number" }
               }
             ]
