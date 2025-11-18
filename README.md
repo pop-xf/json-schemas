@@ -143,14 +143,14 @@ Examples:
   "scale": [100.0, 200.0, 300.0, 400.0, 500.0]
 ```
 
-### `polynomial_order` (optional, *type: integer*)
+### `polynomial_degree` (optional, *type: integer*)
 
-Specifies the maximum degree of polynomial terms included in the expansion. If omitted, the default value is 2 (i.e., quadratic polynomial). Values higher than 2 may be used to represent observables involving higher-order terms in the model parameters. The current implementation of the `JSON` schema defining the data format supports values up to 5. Higher orders are not prohibited in principle but are currently unsupported to avoid excessively large data structures.
+Specifies the maximum degree of polynomial terms included in the expansion. If omitted, the default value is 2 (i.e., quadratic polynomial). Values higher than 2 may be used to represent observables involving higher-order terms in the model parameters. The current implementation of the `JSON` schema defining the data format supports values up to 5. Higher degrees are not prohibited in principle but are currently unsupported to avoid excessively large data structures.
 
 Example:
 
 ```json
-  "polynomial_order": 2
+  "polynomial_degree": 2
 ```
 
 ### `reproducibility` (optional, *type: array of object*)
@@ -303,12 +303,12 @@ The `data` field contains the numerical representation of the observable predict
 Each polynomial coefficient is labelled by a *monomial key*, written as a stringified tuple of model parameters (e.g., Wilson coefficients) defined in the `metadata` field `parameters`. For example, the key `"('C1', 'C2')":` corresponds to the monomial $C_1 C_2$. While the model parameters can be complex numbers, the polynomial coefficients are defined for the real and imaginary parts of the model parameters (see below) and are therefore strictly real. The format and conventions for monomial keys are as follows:
 
 - Each key is a string representation of a Python-style tuple: a comma-separated array of strings enclosed in parentheses.
-- The length of the tuple is determined by the polynomial order $k$, as defined by the  `metadata` field `polynomial_order` (default value: $k=2$, i.e. quadratic polynomial, if `polynomial_order` is omitted). The tuple length equals $k$, unless a real/imaginary tag is included (see below), in which case the length is $k+1$.
+- The length of the tuple is determined by the polynomial degree $k$, as defined by the `metadata` field `polynomial_degree` (default value: $k=2$, i.e. quadratic polynomial, if `polynomial_degree` is omitted). The tuple length equals $k$, unless a real/imaginary tag is included (see below), in which case the length is $k+1$.
 - The first $k$ entries in the tuple are model parameter names, as defined in the `metadata` field `parameters`. These names must be sorted alphabetically to ensure unique monomial keys (assuming the same sorting rules as Python's `sort()` method which sorts alphabetically according to ASCII or UNICODE-value, where upper case comes before lower case, and shorter strings take precedence). Empty strings `''` are used to represent constant terms (equivalent to $1$) and to pad monomials of lower degree. For example, for a quadratic polynomial in real parameters (see below for how complex parameters are handled):
   - A constant $1$ is written as `"('','')"`,
   - A linear term $C_1$ is written as `"('', 'C1')"`,
   - A quadratic term $C_1 C_2$ is written as `"('C1', 'C2')"`.
-- To handle complex parameters, the tuple may optionally include a real/imaginary tag as its final element. This tag consists of `R` (real) and `I` (imaginary) characters, and its length must match the polynomial order $k$. It indicates whether each parameter refers to its real or imaginary part. For example:
+- To handle complex parameters, the tuple may optionally include a real/imaginary tag as its final element. This tag consists of `R` (real) and `I` (imaginary) characters, and its length must match the polynomial degree $k$. It indicates whether each parameter refers to its real or imaginary part. For example:
   - `"('', 'C1', 'RI')"` corresponds to $\mathrm{Im}(C_1)$;
   - `"('C1', 'C2', 'IR')"` corresponds to $\mathrm{Im}(C_1)\mathrm{Re}(C_2)$.
 - If the real/imaginary tag is omitted, the parameters are assumed to be real. For example:
@@ -375,7 +375,7 @@ $$
 
 ### `observable_uncertainties` (optional, *type: object*)
 
-An object representing the uncertainties on the polynomial coefficients for the expanded observables. The fields specify the nature of quoted uncertainty. In many cases there may only be a single top-level field, `"total"`, but multiple fields can be used to specify a breakdown into several sources of uncertainty (e.g., statistical, scale, PDF, ...). The values can either be an object or an array of floats. Objects must have the same structure as `observable_central`, arrays must have length $M$. If instead of an object, an array of floats is specified, it is assumed to correspond to the parameter independent uncertainty only (e.g. the uncertainty on the SM prediction). This would be equivalent to specifying an object with the single key, `"('', '')"`, matching the number of empty strings in the tuple to `metadata.polynomial_order`.
+An object representing the uncertainties on the polynomial coefficients for the expanded observables. The fields specify the nature of quoted uncertainty. In many cases there may only be a single top-level field, `"total"`, but multiple fields can be used to specify a breakdown into several sources of uncertainty (e.g., statistical, scale, PDF, ...). To avoid mistakes, the names of the top-level fields must not have the format of a monomial key (i.e., stringified tuples as defined above). The values of the top-level fields can either be an object or an array of floats. Objects must have the same structure as `observable_central`, arrays must have length $M$. If instead of an object, an array of floats is specified, it is assumed to correspond to the parameter independent uncertainty only (e.g. the uncertainty on the SM prediction). This would be equivalent to specifying an object with the single key, `"('', '')"`, matching the number of empty strings in the tuple to `metadata.polynomial_degree`.
 
 Examples:
 
