@@ -13,7 +13,7 @@ The `metadata` field contains all contextual and structural information required
 
 ### `observable_names` (required, *type: array of string*)
 
-Array of $M$ names identifying each observable. Must be an array of unique, non-empty strings, with at least one entry.
+Array of $M$ names identifying each observable $O_m$. Must be an array of unique, non-empty strings, with at least one entry.
 
 Example:
 
@@ -23,7 +23,7 @@ Example:
 
 ### `parameters` (required, *type: array of string*)
 
-Array of model parameters (e.g., Wilson coefficient names) used in the polynomial expansion. Must be an array of unique, non-empty strings, with at least one entry.
+Array of $S$ names identifying each model parameter $C_s$ (e.g., Wilson coefficient names). Must be an array of unique, non-empty strings, with at least one entry. In general, this includes $S_\mathbb{R}$ real-valued and $S_\mathbb{C}$ complex-valued parameters with $S = S_\mathbb{R} + S_\mathbb{C}$. The real-valued parameters and the real and imaginary parts of the complex-valued parameters are used as the $R=S_\mathbb{R} + 2\ S_\mathbb{C}$ independent variables of all polynomial terms and can be grouped together in a real-valued parameter vector $\vec{C}$ of length $R$.
 
 Example:
 
@@ -57,7 +57,7 @@ Example:
 
 *This field is required to express observables as functions of polynomials. It requires the simultaneous presence of `metadata.observable_expressions` and `data.polynomial_central`.*
 
-Array of names identifying the individual polynomials that enter the observable predictions through the functions defined in `metadata.observable_expressions`. Must contain unique, non-empty strings.
+Array of $K$ names identifying the individual polynomials $P_k$ that enter the observable predictions through the functions defined in `metadata.observable_expressions` (see below). Must contain unique, non-empty strings.
 
 Example:
 
@@ -72,7 +72,7 @@ Example:
 Defines how each observable is constructed from the named polynomials. Must be an array of $M$ objects, one per observable. The length and order of the array must match those of the `observable_names` field. Each object must contain:
 
 - **`variables` (required, *type: object*)**: An object where each key is a string that is a Python-compatible variable name (used as variable in the `expression` field described below), and each value is a string identifying a polynomial name from `polynomial_names`. For example, `{"num": "polynomial 1", "den": "polynomial 2"}`.
-- **`expression` (required, *type: string*)**: A Python-compatible mathematical expression using the dummy variable names defined in `variables`, e.g. `"num/den"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used.
+- **`expression` (required, *type: string*)**: A Python-compatible mathematical expression using the variable names defined in `variables`, e.g. `"num/den"`. Standard mathematical functions like `sqrt` or `cos` that are implemented in packages like `numpy` may be used.
 
 Example:
 
@@ -103,7 +103,7 @@ Example:
 
 ### `scale` (required, *type: number, array*)
 
-The renormalisation scale in GeV at which the parameter vector $\vec{C}$, the polynomial coefficients $\vec p_k$, and the observable coefficients $\vec o_m$ are defined. The parameter vector $\vec{C}$ that enters a given polynomial $P_k$ or observable $O_m$ has to be given at the same scale at which the polynomial coefficients $\vec{p}_k$ or observable coefficients $\vec{o}_m$ are defined, such that the polynomial or observable itself is scale-independent up to higher-order corrections in perturbation theory.
+The renormalisation scale in GeV at which the parameter vector $\vec{C}$, the polynomial coefficients ${\vec{p}_k \supset \vec{b}_k, \vec{c}_k, ...}$, and the observable coefficients ${\vec{o}_m \supset \vec{b}_m, \vec{c}_m, ...}$ and their uncertainties $\vec{\sigma}_m$ are defined. The parameter vector $\vec{C}$ that enters a given polynomial $P_k$ or observable $O_m$ has to be given at the same scale at which the polynomial coefficients $\vec{p}_k$ or observable coefficients $\vec{o}_m$ are defined, such that the polynomial or observable itself is scale-independent up to higher-order corrections in perturbation theory.
 
 This field can take one of two forms:
 
@@ -298,17 +298,17 @@ Example:
 ```
 
 ## `data` Field
-The `data` field contains the numerical representation of the observable predictions. This information is provided in terms of central values and uncertainties of polynomial coefficients, which are associated either directly with observables or with named polynomials on which the observables depend.
+The `data` field contains the numerical representation of all polynomial terms, which define the polynomials $P_k$ and observables $O_m$. This information is provided in terms of central values of polynomial coefficients $\vec{p}_k$ and observable coefficients $\vec{o}_m$, and uncertainties of observable coefficients $\vec{\sigma}_m$.
 
-Each polynomial coefficient is labelled by a *monomial key*, written as a stringified tuple of model parameters (e.g., Wilson coefficients) defined in the `metadata` field `parameters`. For example, the key `"('C1', 'C2')":` corresponds to the monomial $C_1 C_2$. While the model parameters can be complex numbers, the polynomial coefficients are defined for the real and imaginary parts of the model parameters (see below) and are therefore strictly real. The format and conventions for monomial keys are as follows:
+Each component of $\vec{o}_m$, $\vec{p}_k$, and $\vec{\sigma}_m$ is labelled by a *monomial key*, written as a stringified tuple of model parameters (e.g., Wilson coefficients) defined in `metadata.parameters`. For example, the key `"('C1', 'C2')"` corresponds to the monomial $C_1 C_2$. While the model parameters can be complex numbers, the monomials are defined for the real and imaginary parts of the model parameters (see below) and are therefore strictly real. The format and conventions for monomial keys are as follows:
 
 - Each key is a string representation of a Python-style tuple: a comma-separated array of strings enclosed in parentheses.
-- The length of the tuple is determined by the polynomial degree $k$, as defined by the `metadata` field `polynomial_degree` (default value: $k=2$, i.e. quadratic polynomial, if `polynomial_degree` is omitted). The tuple length equals $k$, unless a real/imaginary tag is included (see below), in which case the length is $k+1$.
-- The first $k$ entries in the tuple are model parameter names, as defined in the `metadata` field `parameters`. These names must be sorted alphabetically to ensure unique monomial keys (assuming the same sorting rules as Python's `sort()` method which sorts alphabetically according to ASCII or UNICODE-value, where upper case comes before lower case, and shorter strings take precedence). Empty strings `''` are used to represent constant terms (equivalent to $1$) and to pad monomials of lower degree. For example, for a quadratic polynomial in real parameters (see below for how complex parameters are handled):
+- The length of the tuple is determined by the polynomial degree $d$, as defined by the `metadata` field `polynomial_degree` (default value: $d=2$, i.e. quadratic polynomial, if `polynomial_degree` is omitted). The tuple length equals $d$, unless a real/imaginary tag is included (see below), in which case the length is $d+1$.
+- The first $d$ entries in the tuple are model parameter names, as defined in the `metadata` field `parameters`. These names must be sorted alphabetically to ensure unique monomial keys (assuming the same sorting rules as Python's `sort()` method which sorts alphabetically according to ASCII or UNICODE-value, where all upper-case letters come before all lower-case letters, and shorter strings take precedence). Empty strings `''` are used to represent constant terms (equivalent to $1$) and to pad monomials of lower degree. For example, for a quadratic polynomial in real parameters (see below for how complex parameters are handled):
   - A constant $1$ is written as `"('','')"`,
   - A linear term $C_1$ is written as `"('', 'C1')"`,
   - A quadratic term $C_1 C_2$ is written as `"('C1', 'C2')"`.
-- To handle complex parameters, the tuple may optionally include a real/imaginary tag as its final element. This tag consists of `R` (real) and `I` (imaginary) characters, and its length must match the polynomial degree $k$. It indicates whether each parameter refers to its real or imaginary part. For example:
+- To handle complex parameters, the tuple may optionally include a real/imaginary tag as its final element. This tag consists of `R` (real) and `I` (imaginary) characters, and its length must match the polynomial degree $d$. It indicates whether each parameter refers to its real or imaginary part. For example:
   - `"('', 'C1', 'RI')"` corresponds to $\mathrm{Im}(C_1)$;
   - `"('C1', 'C2', 'IR')"` corresponds to $\mathrm{Im}(C_1)\mathrm{Re}(C_2)$.
 - If the real/imaginary tag is omitted, the parameters are assumed to be real. For example:
@@ -321,7 +321,7 @@ These conventions ensure a canonical and unambiguous representation of polynomia
 
 ### `observable_central` (optional, *type: object*)
 
-An object representing the central values of the polynomial coefficients for the expanded observables, $\vec{o}_m$. Each key must be a monomial key as defined above. The values must be an array of $M$ numbers whose order matches `metadata.observable_names`.
+An object representing the central values of the observable coefficients $\vec{o}_m$ for each observable&nbsp;$O_m$. In case the observables are not themselves polynomials, the observable coefficients correspond to the polynomial approximation of the observables obtained from a Taylor expansion of the observable expressions defined in `metadata.observable_expressions`. Each key must be a monomial key as defined above. Each value must be an array of $M$ numbers whose order matches `metadata.observable_names`.
 
 Example:
 
@@ -338,7 +338,7 @@ $$
 
 ```json
   "observable_central": {
-    "('','')": [1.0, 1.1, 2.3],
+    "('', '')": [1.0, 1.1, 2.3],
     "('', 'C1')": [1.2, 1.3, 0.3],
     "('C1', 'C2')": [1.4, 1.5, 0.7],
     "('C1', 'C3')": [1.6, 1.7, 0.5]
@@ -349,7 +349,7 @@ $$
 
 *This field is required to express observables as functions of polynomials. It requires the simultaneous presence of `metadata.polynomial_names` and `metadata.observable_expressions`.*
 
-An object representing the central values of the polynomial coefficients for each named polynomial, $\vec{p}_k$. Each key must be a monomial key as defined above. The values must be an array of $K$ numbers whose order matches `metadata.polynomial_names`.
+An object representing the central values of the polynomial coefficients $\vec{p}_k$ for each named polynomial $P_k$. Each key must be a monomial key as defined above. Each value must be an array of $K$ numbers whose order matches `metadata.polynomial_names`.
 
 Example:
 
@@ -365,7 +365,7 @@ $$
 
 ```json
   "polynomial_central": {
-    "('','')": [1.0, 1.1],
+    "('', '', 'RR')": [1.0, 1.1],
     "('', 'C1', 'RI')": [1.2, 1.3],
     "('C1', 'C2', 'RR')": [0.8, 0.85],
     "('C1', 'C2', 'RI')": [0.5, 0.55],
@@ -375,14 +375,14 @@ $$
 
 ### `observable_uncertainties` (optional, *type: object*)
 
-An object representing the uncertainties on the polynomial coefficients for the expanded observables. The fields specify the nature of quoted uncertainty. In many cases there may only be a single top-level field, `"total"`, but multiple fields can be used to specify a breakdown into several sources of uncertainty (e.g., statistical, scale, PDF, ...). To avoid mistakes, the names of the top-level fields must not have the format of a monomial key (i.e., stringified tuples as defined above). The values of the top-level fields can either be an object or an array of floats. Objects must have the same structure as `observable_central`, arrays must have length $M$. If instead of an object, an array of floats is specified, it is assumed to correspond to the parameter independent uncertainty only (e.g. the uncertainty on the SM prediction). This would be equivalent to specifying an object with the single key, `"('', '')"`, matching the number of empty strings in the tuple to `metadata.polynomial_degree`.
+An object representing the uncertainties on the observable coefficients $\vec{\sigma}_m$ for each observable&nbsp;$O_m$. In case the observables are not themselves polynomials, the observable coefficients correspond to the polynomial approximation of the observables obtained from a Taylor expansion of the observable expressions defined in `metadata.observable_expressions`. The fields specify the nature of quoted uncertainty. In many cases there may only be a single top-level field, `"total"`, but multiple fields can be used to specify a breakdown into several sources of uncertainty (e.g., statistical, scale, PDF, ...). To avoid mistakes, the names of the top-level fields must not have the format of a monomial key (i.e., stringified tuples as defined above). The value of each top-level field can either be an object or an array of floats. Objects must have the same structure as `observable_central`, arrays must have length $M$. If instead of an object, an array of floats is specified, it is assumed to correspond to the parameter independent uncertainty only (e.g. the uncertainty on the SM prediction). This would be equivalent to specifying an object containing a single element with the monomial key of the constant term (e.g.&nbsp;`"('','')"` for a quadratic polynomial).
 
 Examples:
 
 ```json
   "observable_uncertainties": {
     "total": {
-      "('','')": [0.05, 0.06, 0.01],
+      "('', '')": [0.05, 0.06, 0.01],
       "('', 'C1')": [0.1, 0.12, 0.01],
       "('C1', 'C2')": [0.02, 0.03, 0.02],
       "('C1', 'C3')": [0.05, 0.06, 0.01]
@@ -405,15 +405,15 @@ Specifying an uncertainty breakdown:
 ```json
   "observable_uncertainties": {
     "MC_stats": {
-      "('','')": [0.002, 0.0012, 0.001],
+      "('', '')": [0.002, 0.0012, 0.001],
       "('', 'C1')": [0.001, 0.0015, 0.0001]
     },
     "scale": {
-      "('','')": [0.04, 0.05, 0.06],
+      "('', '')": [0.04, 0.05, 0.06],
       "('', 'C1')": [0.1, 0.12, 0.01]
     },
     "PDF": {
-      "('','')": [0.03, 0.04, 0.05],
+      "('', '')": [0.03, 0.04, 0.05],
       "('', 'C1')": [0.02, 0.08, 0.01]
     }
   }
