@@ -434,7 +434,7 @@
                   "settings": {
                     "type": "object",
                     "minProperties": 1,
-                    "description": "object containing information about the tool settings with free-form substructure. For example:\n      - `perturbative_order` (e.g. `\"LO\"`, `\"NLO\"`, `\"NLOQCD\"`, ...)\n      - `PDF`: name, version, and set of the PDF used.\n      - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.\n      - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `\"dynamical:HT/2\"`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.\n      - `renormalization_scheme`: details of the renormalization scheme used in the computation.\n      - `covariant_derivative_sign`: sign convention used for the covariant derivative (`\"+\"` or `\"-\"`).\n      - `gamma5_scheme`: scheme used for $\\gamma_5$ in dimensional regularization (`\"BMHV\"`, `\"KKS\"`, ...).\n      - `evanescent`: details of the treatment of evanescent operators, e.g. a reference to the scheme used.\n      - `approximations`: Any relevant approximations used, such as the use of the first leading-logarithmic approximation for RG evolution.\n      - any other relevant settings specific to the tool or calculation."
+                    "description": "object containing information about the tool settings with free-form substructure. For example:\n      - `perturbative_order` (e.g. `\"LO\"`, `\"NLO\"`, `\"NLOQCD\"`, ...)\n      - `PDF`: name, version, and set of the PDF used.\n      - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.\n      - `cuts`: Information about kinematical cuts specifying the phase space region over which the observable is computed (e.g. acceptance effects, signal region definition, ...).\n      - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `\"dynamical:HT/2\"`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.\n      - `renormalization_scheme`: details of the renormalization scheme used in the computation.\n      - `covariant_derivative_sign`: sign convention used for the covariant derivative (`\"+\"` or `\"-\"`).\n      - `gamma5_scheme`: scheme used for $\\gamma_5$ in dimensional regularization (`\"BMHV\"`, `\"KKS\"`, ...).\n      - `evanescent`: details of the treatment of evanescent operators, e.g. a reference to the scheme used.\n      - `approximations`: Any relevant approximations used, such as the use of the first leading-logarithmic approximation for RG evolution.\n      - any other relevant settings specific to the tool or calculation."
                   }
                 },
                 "required": ["name"],
@@ -462,6 +462,19 @@
                         },
                         "perturbative_order": "NLOQCD",
                         "scale_choice": [91.1876, 125.0]
+                      }
+                    }
+                  },
+                  {
+                    "tool": {
+                      "name": "AnalysisTool",
+                      "version": "1.0.0",
+                      "settings": {
+                        "cuts": {
+                          "pT_min": 20.0,
+                          "eta_max": 2.5
+                        },
+                        "code":"https://coderepository.com/analysis/example"
                       }
                     }
                   },
