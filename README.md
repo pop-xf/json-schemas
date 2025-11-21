@@ -220,6 +220,7 @@ The predefined fields are as follows:
       - `perturbative_order` (e.g. `"LO"`, `"NLO"`, `"NLOQCD"`, ...)
       - `PDF`: name, version, and set of the PDF used.
       - `UFO`: name and version of UFO model used, as well as any other relevant information such as flavor schemes or webpage link.
+      - `cuts`: Information about kinematical cuts specifying the phase space region over which the observable is computed (e.g. acceptance effects, signal region definition, ...).
       - `scale_choice`: Nominal scale choice employed when computing the predictions. This could be an array of fixed scales or a string describing a dynamical scale choice like `"dynamical:HT/2"`. This field is particularly relevant when RGE effects are folded into the prediction, see the description of `metadata.scale` above.
       - `renormalization_scheme`: details of the renormalization scheme used in the computation.
       - `covariant_derivative_sign`: sign convention used for the covariant derivative (`"+"` or `"-"`).
@@ -253,6 +254,20 @@ The predefined fields are as follows:
         },
         "perturbative_order": "NLOQCD",
         "scale_choice": [91.1876, 125.0]
+      }
+    }
+  ```
+
+  ```json
+    "tool": {
+      "name": "AnalysisTool",
+      "version": "1.0.0",
+      "settings": {
+        "cuts": {
+          "pT_min": 20.0,
+          "eta_max": 2.5
+        },
+        "code": "https://coderepository.com/analysis/example"
       }
     }
   ```
